@@ -27,8 +27,8 @@ def get_swagger():
 todo_listen = []  # [{id, name}]
 todo_einträge = []  # [{id, name, beschreibung, liste_id}]
 
-# Route die alle Einträge einer bestimmten Liste zurückgibt
-@app.route('/getAllEinträgeById', methods=['GET'])
+# Liefert alle Einträge einer Todo-Liste zurück.
+@app.route('/getAllEinträge', methods=['GET'])
 def getAllEinträgeById():
     params = request.args
     liste_id = params.get('liste_id')
@@ -45,7 +45,7 @@ def getAllEinträgeById():
 def getAllListen():
     return jsonify(todo_listen)
 
-# Route um eine Liste zu erstellen
+# Fügt eine neue Todo-Liste hinzu.
 @app.route('/insertListe', methods=['POST'])
 def insertListe():
     params = request.json
@@ -58,7 +58,7 @@ def insertListe():
 
     return jsonify({"message": "Liste erstellt", "id": liste_id}), 201
 
-# Route um einen Eintrag hinzuzufügen
+# Fügt einen Eintrag zu einer bestehenden Todo-Liste hinzu.
 @app.route('/insertEintrag', methods=['POST'])
 def insertEintrag():
     params = request.json
@@ -70,6 +70,7 @@ def insertEintrag():
         return jsonify({"error": "Liste mit der angegebenen ID existiert nicht"}), 404
     
     eintrag_id = str(uuid.uuid4())
+
     todo_einträge.append({
         "id": eintrag_id,
         "name": params['name'],
@@ -78,8 +79,32 @@ def insertEintrag():
     })
     return jsonify({"message": "Eintrag erstellt", "id": eintrag_id}), 201
 
-# Route um einen Eintrag zu löschen
-@app.route('/deleteEintrag', methods=['POST'])
+# Aktualisiert einen bestehenden Eintrag einer Todo-Liste.
+@app.route('/updateEintrag', methods=['PUT'])
+def updateEintrag():
+    params = request.json
+
+    if 'id' not in params or 'name' not in params or 'beschreibung' not in params:
+        return jsonify({"error": "Fehlende Felder: id, name oder beschreibung"}), 400
+
+    eintrag_id = params['id']
+    eintrag = []
+    for item in todo_einträge:
+        if item['id'] == eintrag_id:
+            eintrag = item
+            break
+
+    if not eintrag:
+        return jsonify({"error": "Eintrag mit der angegebenen ID existiert nicht"}), 404
+
+    # Aktualisiere die Felder des Eintrags
+    eintrag['name'] = params['name']
+    eintrag['beschreibung'] = params['beschreibung']
+
+    return jsonify({"message": "Eintrag erfolgreich aktualisiert", "id": eintrag_id}), 200
+
+# Löscht einen einzelnen Eintrag einer Todo-Liste. 
+@app.route('/deleteEintrag', methods=['DELETE'])
 def deleteEintrag():
     params = request.json
 
@@ -100,8 +125,8 @@ def deleteEintrag():
 
     return jsonify({"message": "Eintrag wurde gelöscht", "id": eintrag_id}), 200
 
-# Route um einen Eintrag zu löschen
-@app.route('/deleteListe', methods=['POST'])
+# Löscht eine komplette Todo-Liste mit allen Einträgen
+@app.route('/deleteListe', methods=['DELETE'])
 def deleteListe():
     params = request.json
 
