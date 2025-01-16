@@ -4,6 +4,11 @@
 
 Die Dokumentation der API findest du [hier](http://localhost:5000/docs) wenn die App local gestartet wurde.
 
+## Requirements
+
+- flask
+- flask-swagger-ui
+
 ## Docker
 
 docker build -t todo-api .
