@@ -89,6 +89,7 @@ def updateEintrag():
 
     eintrag_id = params['id']
     eintrag = []
+    
     for item in todo_einträge:
         if item['id'] == eintrag_id:
             eintrag = item
@@ -113,6 +114,7 @@ def deleteEintrag():
     
     eintrag_id = params['id']
     eintrag = []
+
     for item in todo_einträge:
         if item['id'] == eintrag_id:
             eintrag = item
@@ -135,6 +137,7 @@ def deleteListe():
     
     liste_id = params['id']
     liste = []
+
     for item in todo_listen:
         if item['id'] == liste_id:
             liste = item
@@ -145,6 +148,7 @@ def deleteListe():
 
     todo_listen.remove(liste)
     eintrag_delete = []
+
     for eintrag in todo_einträge:
         if(eintrag['liste_id'] == liste_id):
             eintrag_delete.append(eintrag)
