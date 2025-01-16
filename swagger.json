@@ -1,125 +1,144 @@
 {
-  "swagger": "2.0",
+  "openapi": "3.0.0",
   "info": {
-    "version": "1.0.0",
     "title": "ToDo-Api",
-    "description": "API für das Verwalten von To-Do-Listen und Einträgen"
+    "description": "API zur Verwaltung von Todo-Listen und deren Einträgen.",
+    "version": "1.0.0"
   },
-  "host": "localhost:5000",
-  "basePath": "/",
-  "schemes": ["http"],
   "paths": {
-    "/getAllListen": {
+    "/getAllEinträge": {
       "get": {
-        "summary": "Gibt alle Listen zurück",
-        "responses": {
-          "200": {
-            "description": "Erfolgreich",
-            "schema": {
-              "type": "array",
-              "items": {
-                "type": "object",
-                "properties": {
-                  "id": { "type": "string" },
-                  "name": { "type": "string" }
-                }
-              }
-            }
-          }
-        }
-      }
-    },
-    "/getAllEinträgeById": {
-      "get": {
-        "summary": "Gibt alle Einträge einer bestimmten Liste zurück",
+        "summary": "Liefert alle Einträge einer Todo-Liste zurück.",
         "parameters": [
           {
             "name": "liste_id",
             "in": "query",
             "required": true,
-            "type": "string",
-            "description": "ID der Liste"
+            "description": "ID der Todo-Liste, um die Einträge abzurufen.",
+            "schema": {
+              "type": "string"
+            }
           }
         ],
         "responses": {
           "200": {
-            "description": "Erfolgreich",
-            "schema": {
-              "type": "array",
-              "items": {
-                "type": "object",
-                "properties": {
-                  "id": { "type": "string" },
-                  "name": { "type": "string" },
-                  "beschreibung": { "type": "string" },
-                  "liste_id": { "type": "string" }
+            "description": "Liste von Einträgen",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "properties": {
+                      "id": { "type": "string" },
+                      "name": { "type": "string" },
+                      "beschreibung": { "type": "string" },
+                      "liste_id": { "type": "string" }
+                    }
+                  }
                 }
               }
             }
           },
-          "400": { "description": "Listen-ID fehlt" }
+          "400": {
+            "description": "Fehlende Listen-ID"
+          }
+        }
+      }
+    },
+    "/getAllListen": {
+      "get": {
+        "summary": "Liefert alle Todo-Listen zurück.",
+        "responses": {
+          "200": {
+            "description": "Liste von Todo-Listen",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "properties": {
+                      "id": { "type": "string" },
+                      "name": { "type": "string" }
+                    }
+                  }
+                }
+              }
+            }
+          }
         }
       }
     },
     "/insertListe": {
       "post": {
-        "summary": "Erstellt eine neue Liste",
-        "parameters": [
-          {
-            "in": "body",
-            "name": "body",
-            "required": true,
-            "schema": {
-              "type": "object",
-              "properties": {
-                "name": { "type": "string" }
-              },
-              "required": ["name"]
+        "summary": "Fügt eine neue Todo-Liste hinzu.",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "name": { "type": "string" }
+                },
+                "required": ["name"]
+              }
             }
           }
-        ],
+        },
         "responses": {
           "201": {
-            "description": "Liste erfolgreich erstellt",
-            "schema": {
-              "type": "object",
-              "properties": {
-                "message": { "type": "string" },
-                "id": { "type": "string" }
+            "description": "Liste wurde erstellt",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "message": { "type": "string" },
+                    "id": { "type": "string" }
+                  }
+                }
               }
             }
           },
-          "400": { "description": "Name der Liste fehlt" }
+          "400": {
+            "description": "Fehlende Listenname"
+          }
         }
       }
     },
     "/insertEintrag": {
       "post": {
-        "summary": "Fügt einen neuen Eintrag zu einer Liste hinzu",
-        "parameters": [
-          {
-            "in": "body",
-            "name": "body",
-            "required": true,
-            "schema": {
-              "type": "object",
-              "properties": {
-                "name": { "type": "string" },
-                "beschreibung": { "type": "string" },
-                "liste_id": { "type": "string" }
-              },
-              "required": ["name", "beschreibung", "liste_id"]
+        "summary": "Fügt einen Eintrag zu einer bestehenden Todo-Liste hinzu.",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "name": { "type": "string" },
+                  "beschreibung": { "type": "string" },
+                  "liste_id": { "type": "string" }
+                },
+                "required": ["name", "beschreibung", "liste_id"]
+              }
             }
           }
-        ],
+        },
         "responses": {
           "201": {
-            "description": "Eintrag erfolgreich erstellt",
-            "schema": {
-              "type": "object",
-              "properties": {
-                "message": { "type": "string" },
-                "id": { "type": "string" }
+            "description": "Eintrag wurde erstellt",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "message": { "type": "string" },
+                    "id": { "type": "string" }
+                  }
+                }
               }
             }
           },
@@ -132,35 +151,84 @@
         }
       }
     },
-    "/deleteEintrag": {
-      "post": {
-        "summary": "Löscht einen Eintrag",
-        "parameters": [
-          {
-            "in": "body",
-            "name": "body",
-            "required": true,
-            "schema": {
-              "type": "object",
-              "properties": {
-                "id": { "type": "string" }
-              },
-              "required": ["id"]
+    "/updateEintrag": {
+      "put": {
+        "summary": "Aktualisiert einen bestehenden Eintrag einer Todo-Liste.",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "id": { "type": "string" },
+                  "name": { "type": "string" },
+                  "beschreibung": { "type": "string" }
+                },
+                "required": ["id", "name", "beschreibung"]
+              }
             }
           }
-        ],
+        },
         "responses": {
           "200": {
-            "description": "Eintrag erfolgreich gelöscht",
-            "schema": {
-              "type": "object",
-              "properties": {
-                "message": { "type": "string" },
-                "id": { "type": "string" }
+            "description": "Eintrag wurde erfolgreich aktualisiert",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "message": { "type": "string" },
+                    "id": { "type": "string" }
+                  }
+                }
               }
             }
           },
-          "400": { "description": "Eintrags-ID fehlt" },
+          "400": {
+            "description": "Fehlende Felder: id, name oder beschreibung"
+          },
+          "404": {
+            "description": "Eintrag mit der angegebenen ID existiert nicht"
+          }
+        }
+      }
+    },
+    "/deleteEintrag": {
+      "delete": {
+        "summary": "Löscht einen einzelnen Eintrag einer Todo-Liste.",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "id": { "type": "string" }
+                },
+                "required": ["id"]
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Eintrag wurde gelöscht",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "message": { "type": "string" },
+                    "id": { "type": "string" }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Es wurde keine ID des Eintrags angegeben"
+          },
           "404": {
             "description": "Eintrag mit der angegebenen ID existiert nicht"
           }
@@ -168,34 +236,40 @@
       }
     },
     "/deleteListe": {
-      "post": {
-        "summary": "Löscht eine Liste und ihre Einträge",
-        "parameters": [
-          {
-            "in": "body",
-            "name": "body",
-            "required": true,
-            "schema": {
-              "type": "object",
-              "properties": {
-                "id": { "type": "string" }
-              },
-              "required": ["id"]
+      "delete": {
+        "summary": "Löscht eine komplette Todo-Liste mit allen Einträgen.",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "id": { "type": "string" }
+                },
+                "required": ["id"]
+              }
             }
           }
-        ],
+        },
         "responses": {
           "200": {
-            "description": "Liste und ihre Einträge erfolgreich gelöscht",
-            "schema": {
-              "type": "object",
-              "properties": {
-                "message": { "type": "string" },
-                "id": { "type": "string" }
+            "description": "Liste und deren Einträge wurden gelöscht",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "message": { "type": "string" },
+                    "id": { "type": "string" }
+                  }
+                }
               }
             }
           },
-          "400": { "description": "Listen-ID fehlt" },
+          "400": {
+            "description": "Es wurde keine ID der Liste angegeben"
+          },
           "404": {
             "description": "Liste mit der angegebenen ID existiert nicht"
           }
