@@ -36,7 +36,10 @@ def getAllEinträgeById():
     if not liste_id:
         return jsonify({"error": "Listen-ID fehlt"}), 400
     
-    einträge = [eintrag for eintrag in todo_einträge if eintrag['liste_id'] == liste_id]
+    einträge = []
+    for eintrag in todo_einträge:
+        if eintrag['liste_id'] == liste_id:
+            einträge.append(eintrag)
 
     return jsonify(einträge), 200
 
